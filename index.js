@@ -8,12 +8,6 @@ const handlers = require('./lib/handlers')
 
 const port = process.env.PORT || 3000
 
-app.get('/', handlers.home)
-app.get('/about', handlers.about)
-app.use(handlers.notFound)
-app.use(handlers.serverError)
-
-
 
 // configure Handlebars view engine
 app.engine('handlebars', engine({
@@ -22,6 +16,23 @@ app.engine('handlebars', engine({
 app.set('view engine', 'handlebars')
 
 app.use(express.static(__dirname + '/public'))
+
+
+app.disable('x-powered-by')
+
+app.get('/', handlers.home)
+app.get('/about', handlers.about)
+app.get('/headers', (req, res) => {
+  res.type('text/plain')
+  const headers = Object.entries(req.headers).map(([key, value]) => `${key} : ${value}`)
+  res.send(headers.join('\n'))
+})
+app.use(handlers.notFound)
+app.use(handlers.serverError)
+
+
+
+
 
 
 
